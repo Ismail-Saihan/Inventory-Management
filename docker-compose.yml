@@ -1,0 +1,25 @@
+services:
+  server:
+    build:
+      context: ./server
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - HOST=0.0.0.0
+      - DATABASE_URL=file:/app/prisma/dev.db
+      - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
+    volumes:
+      - ./server/prisma:/app/prisma
+    depends_on: []
+
+  client:
+    build:
+      context: ./client
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_API_URL=http://<your-PC-IP>:4000
+    depends_on:
+      - server
